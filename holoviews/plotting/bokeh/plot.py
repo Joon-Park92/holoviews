@@ -23,12 +23,11 @@ from ..plot import (DimensionedPlot, GenericCompositePlot, GenericLayoutPlot,
                     GenericElementPlot, GenericOverlayPlot)
 from ..util import attach_streams, displayable, collate
 from .callbacks import LinkCallback
-from .util import (layout_padding, pad_plots, filter_toolboxes, make_axis,
-                   update_shared_sources, empty_plot, decode_bytes,
-                   theme_attr_json, cds_column_replace)
-
-TOOLS = {name: tool if isinstance(tool, basestring) else type(tool())
-         for name, tool in known_tools.items()}
+from .util import (
+    TOOL_TYPES, layout_padding, pad_plots, filter_toolboxes,
+    make_axis, update_shared_sources, empty_plot, decode_bytes,
+    theme_attr_json, cds_column_replace
+)
 
 
 class BokehPlot(DimensionedPlot):
@@ -260,7 +259,7 @@ class BokehPlot(DimensionedPlot):
         the root level bokeh model.
         """
         subplots = self.traverse(lambda x: x, [GenericElementPlot])
-        merged_tools = {t: list(plot.select({'type': TOOLS[t]}))
+        merged_tools = {t: list(plot.select({'type': TOOL_TYPES[t]}))
                         for t in self._merged_tools}
         for subplot in subplots:
             for cb in subplot.callbacks:
